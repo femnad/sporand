@@ -22,6 +22,7 @@ const (
 )
 
 var (
+	ranges = []spotify.Range{spotify.LongTermRange, spotify.MediumTermRange, spotify.ShortTermRange}
 	scopes = []string{
 		spotifyauth.ScopePlaylistModifyPrivate,
 		spotifyauth.ScopePlaylistReadPrivate,
@@ -29,6 +30,11 @@ var (
 		spotifyauth.ScopeUserTopRead,
 	}
 )
+
+func getRandomRange() spotify.RequestOption {
+	idx := rand.Int() % len(ranges)
+	return spotify.Timerange(ranges[idx])
+}
 
 func selectRandomElements(all []spotify.ID, count int) []spotify.ID {
 	var selected []spotify.ID
@@ -120,7 +126,7 @@ func Generate(ctx context.Context) error {
 		return err
 	}
 
-	topArtists, err := c.CurrentUsersTopArtists(ctx, spotify.Timerange(spotify.ShortTermRange))
+	topArtists, err := c.CurrentUsersTopArtists(ctx, getRandomRange())
 	if err != nil {
 		return err
 	}
